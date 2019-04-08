@@ -28,6 +28,9 @@ trait Api {
      */
     private $resource;
 
+    /** @var bool */
+    private $isSandbox;
+
     /**
      * returns an associative array representing the HTTP Headers.
      * @return array
@@ -62,7 +65,12 @@ trait Api {
      */
     private function url(string $overrideResource = null) : string
     {
-        $url = 'https://api.maropost.com/accounts/';
+        if ($this->isSandbox) {
+            $url = 'https://sandbox.maropost.com/accounts/';
+        } else {
+            $url = 'https://api.maropost.com/accounts/';
+        }
+
         $resource = $this->resource;
         // overrides original resource if specified
         $resource = $overrideResource === null ? $resource : $overrideResource;
@@ -205,5 +213,21 @@ trait Api {
         }
 
         return new GetResult($this->apiResponse);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSandbox(): bool
+    {
+        return $this->isSandbox;
+    }
+
+    /**
+     * @param bool $isSandbox
+     */
+    public function setIsSandbox(bool $isSandbox)
+    {
+        $this->isSandbox = $isSandbox;
     }
 }
